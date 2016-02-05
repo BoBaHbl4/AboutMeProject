@@ -1,3 +1,4 @@
 # build directories
 node_modules/
 src_libs/
+.idea/
