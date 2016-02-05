@@ -1,0 +1,22 @@
+{
+  "name": "AboutMeProject",
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.0.1",
+    "bootstrap": "~3.3.6",
+    "angular": "angularjs#~1.4.9",
+    "font-awesome": "^4.5.0"
+  }
+}
