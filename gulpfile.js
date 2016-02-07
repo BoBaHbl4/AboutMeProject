@@ -1,46 +1,41 @@
 var gulp = require('gulp');
-var config = require('./gulpconfig');
 var browserSync = require("browser-sync").create();
-//var changedFiles = require("gulp-changed");
+var changedFiles = require("gulp-changed");
 var less = require("gulp-less");
 var path = require('path');
-
-// Static Server + watching scss/html files
-//gulp.task('browser-sync', function() {
-//    browserSync.init({
-//        server: {
-//            baseDir: './src_dev'
-//        }
-//    });
-//});
+var minifyCSS = require('gulp-minify-css');
+var rename = require('gulp-rename');
 
 // Server + watching files
-gulp.task('browser-sync-build', function() {
-    browserSync.init({
-        server: {
-            baseDir: './build'
-        }
-    });
-});
 
-// LESS simple task
-gulp.task('less', function () {
-    return gulp.src('./src_dev/css/less/*.less')
-        .pipe(less({
-            paths: [ path.join(__dirname, 'less', 'includes') ]
+
+// Styles task
+// Compile *.less-files to css
+// Concat and minify styles
+gulp.task('styles', function(){
+    gulp.src('./src_dev/css/less/*.less')
+        .pipe(less())
+        .pipe(minifyCSS())
+        .pipe(rename({
+            suffix: ".min"
         }))
-        .pipe(gulp.dest('./build/css'));
+        .pipe(gulp.dest('./build/css'))
 });
 
-
-gulp.task('watchChange', ['browser-sync-build'], function () {
-    // add browserSync.reload to the tasks array to make
-    // all browsers reload after tasks are complete.
-    gulp.watch("build/*.*", [browserSync.reload]);
+gulp.task('copyHtml', function() {
+    gulp.src('./src_dev/html_tmpls/*.html')
+        .pipe(gulp.dest('./build/html/'));
 });
-
 
 gulp.task('default', function() {
-    gulp.watch(config.watch.less, ['less']);
-    gulp.watch(config.watch.watchChange, ['watchChange']);
+    gulp.run('copyHtml', 'styles');
+
+    gulp.watch('./src_dev/css/less/*.less', function(event) {
+        gulp.run('styles');
+    });
+
+    gulp.watch('./src_dev/html_tmpls/*.*', function(event) {
+        gulp.run('copyHtml');
+    });
+
 });
