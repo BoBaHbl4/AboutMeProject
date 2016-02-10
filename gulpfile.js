@@ -1,13 +1,21 @@
 var gulp = require('gulp');
-var browserSync = require("browser-sync").create();
+var browserSync = require("browser-sync");
+var reload      = browserSync.reload;
 var changedFiles = require("gulp-changed");
 var less = require("gulp-less");
 var path = require('path');
 var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
 
-// Server + watching files
-
+// Static Server
+gulp.task('browser-sync', function() {
+    browserSync({
+        server: {
+            baseDir: "./build"
+        },
+        startPath: "/html"
+    });
+});
 
 // Styles task
 // Compile *.less-files to css
@@ -24,18 +32,15 @@ gulp.task('styles', function(){
 
 gulp.task('copyHtml', function() {
     gulp.src('./src_dev/html_tmpls/*.html')
-        .pipe(gulp.dest('./build/html/'));
+        .pipe(gulp.dest('./build/html/'))
+        .pipe(reload({stream:true}));
 });
 
-gulp.task('default', function() {
-    gulp.run('copyHtml', 'styles');
+gulp.task('default', ['browser-sync'], function() {
 
-    gulp.watch('./src_dev/css/less/*.less', function(event) {
-        gulp.run('styles');
-    });
+    var client = ['copyHtml', 'styles'];
 
-    gulp.watch('./src_dev/html_tmpls/*.*', function(event) {
-        gulp.run('copyHtml');
-    });
+    gulp.watch('./src_dev/css/less/*.less',client);
+    gulp.watch('./src_dev/html_tmpls/*.*',client);
 
 });
