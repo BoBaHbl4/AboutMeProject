@@ -1,11 +1,17 @@
 var gulp = require('gulp');
 var browserSync = require("browser-sync");
 var reload      = browserSync.reload;
-var changedFiles = require("gulp-changed");
 var less = require("gulp-less");
-var path = require('path');
 var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
+var inject = require('gulp-inject');
+var concat = require('gulp-concat');
+var print = require('gulp-print');
+var angularFilesort = require('gulp-angular-filesort');
+var uglify = require('gulp-uglify');
+var path = require('path');
+var util = require('gulp-util');
+var merge = require('merge-stream');
 
 // Static Server
 gulp.task('browser-sync', function() {
@@ -13,106 +19,63 @@ gulp.task('browser-sync', function() {
         server: {
             baseDir: "./build"
         },
-        startPath: "/html"
+        startPath: "/"
     });
 });
 
-// Styles task
-// Compile *.less-files to css
-// Concat and minify styles
-gulp.task('styles', function(){
-    gulp.src('./src_dev/css/less/*.less')
-        .pipe(less())
-        .pipe(minifyCSS())
-        .pipe(rename({
-            suffix: ".min"
-        }))
-        .pipe(gulp.dest('./build/css'))
-});
-
-gulp.task('copyHtml', function() {
-    gulp.src('./src_dev/html_tmpls/*.html')
-        .pipe(gulp.dest('./build/html/'))
+gulp.task('updateView', function() {
+    gulp.src('./build/*.html')
         .pipe(reload({stream:true}));
 });
 
-gulp.task('default', ['browser-sync'], function() {
-
-    var client = ['copyHtml', 'styles'];
-
-    gulp.watch('./src_dev/css/less/*.less',client);
-    gulp.watch('./src_dev/html_tmpls/*.*',client);
-
+// Styles tasks
+//
+// Compile libs *.less-files to css
+// Concat and minify styles
+gulp.task('lib-less', function () {
+    return gulp.src(['./src_dev/css/less/bootstrap/bootstrap.less', './src_dev/css/less/font-awesome/font-awesome.less'])
+        .pipe(less())
+        .pipe(minifyCSS())
+        .pipe(concat('lib-styles.min.css'))
+        .pipe(gulp.dest('./src_dev/css'));
 });
 
+// Compile dev *.less-files to css
+// Concat and minify styles
+gulp.task('less-task', function () {
+    return gulp.src('./src_dev/css/less/*.less')
+        .pipe(less())
+        .pipe(less().on('error', util.log))
+        .pipe(concat('main.min.css'))
+        .pipe(minifyCSS())
+        .pipe(gulp.dest('./src_dev/css'));
+});
 
+// Compile dev and libs css-files
+// Concat and injecting in build dir
+gulp.task('css-inject', function () {
+    var target = gulp.src('./build/index.html');
+    var customCssStream = gulp.src(['./src_dev/css/lib-styles.min.css',
+        './src_dev/css/main.min.css']);
 
+    return target
+        .pipe(inject(
+            customCssStream.pipe(print())
+                .pipe(concat('common.min.css'))
+                .pipe(gulp.dest('build/css')), { read: false, addRootSlash: false, relative: true })
+        )
+        .pipe(gulp.dest('./build/'));
+});
 
+// Default Gulp Task
+// Included libs, dev styles compile&inject and reload browsers on changes
+gulp.task('default', ['browser-sync', 'lib-less', 'less-task', 'css-inject'], function() {
+    console.log('Gulp started!');
 
+    var buildUpdate = ['less-task', 'css-inject', 'updateView'];
 
+    gulp.watch('./src_dev/css/less/*.less',buildUpdate);
+    gulp.watch('./src_dev/css/less/**/*.less',buildUpdate);
+    gulp.watch('./build/*.html',['updateView']);
 
-
-
-/*
- This file in the main entry point for defining Gulp tasks and using Gulp plugins.
- Click here to learn more. http://go.microsoft.com/fwlink/?LinkId=518007
- */
-
-//var gulp = require('gulp');
-//var less = require("gulp-less");
-//var minifyCSS = require('gulp-minify-css');
-//var rename = require('gulp-rename');
-//var inject = require('gulp-inject');
-//var concat = require('gulp-concat');
-//var print = require('gulp-print');
-//var angularFilesort = require('gulp-angular-filesort');
-//var uglify = require('gulp-uglify');
-//var path = require('path');
-//var util = require('gulp-util');
-//var merge = require('merge-stream');
-//
-//// Less Task
-//// Compile *.less-files to css
-//// Minify styles
-//gulp.task('lib-less', function () {
-//    return gulp.src(['./dev_root/css/less/bootstrap/bootstrap.less', './dev_root/css/less/font-awesome/font-awesome.less'])
-//        .pipe(less())
-//        .pipe(minifyCSS())
-//        //.pipe(rename({
-//        //    suffix: ".min"
-//        //}))
-//        .pipe(concat('lib-styles.min.css'))
-//        .pipe(gulp.dest('./dev_root/css'));
-//});
-//
-//gulp.task('less-task', function () {
-//    return gulp.src('./dev_root/css/*.less')
-//        .pipe(less())
-//        .pipe(less().on('error', util.log))
-//        .pipe(concat('main.min.css'))
-//        .pipe(minifyCSS())
-//        .pipe(gulp.dest('./dev_root/css'));
-//});
-//
-//gulp.task('css-inject', function () {
-//    var target = gulp.src('./wwwroot/index.html');
-//    var customCssStream = gulp.src(['./dev_root/css/lib-styles.min.css',
-//        './dev_root/css/main.min.css']);
-//
-//    return target
-//        .pipe(inject(
-//            customCssStream.pipe(print())
-//                .pipe(concat('common.css'))
-//                .pipe(gulp.dest('./wwwroot/css')), { read: false, addRootSlash: false, relative: false })
-//        )
-//        .pipe(gulp.dest('./wwwroot/'));
-//
-//});
-//
-//
-//
-//gulp.task('default', ['lib-less'], function () {
-//    console.log('Hello Gulp!');
-//    gulp.watch('./dev_root/css/less/*.less', ['less-task']);
-//    gulp.watch('./dev_root/css/less/*.less', ['css-inject']);
-//});
+});
