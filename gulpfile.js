@@ -33,7 +33,8 @@ gulp.task('updateView', function() {
 // Compile libs *.less-files to css
 // Concat and minify styles
 gulp.task('lib-less', function () {
-    return gulp.src(['./src_dev/css/less/bootstrap/bootstrap.less', './src_dev/css/less/font-awesome/font-awesome.less'])
+    return gulp.src([   './src_dev/css/less/bootstrap/bootstrap.less',
+                        './src_dev/css/less/font-awesome/font-awesome.less'])
         .pipe(less())
         .pipe(minifyCSS())
         .pipe(concat('lib-styles.min.css'))
@@ -56,7 +57,7 @@ gulp.task('less-task', function () {
 gulp.task('css-inject', function () {
     var target = gulp.src('./build/index.html');
     var customCssStream = gulp.src(['./src_dev/css/lib-styles.min.css',
-        './src_dev/css/main.min.css']);
+                                    './src_dev/css/main.min.css']);
 
     return target
         .pipe(inject(
@@ -67,9 +68,30 @@ gulp.task('css-inject', function () {
         .pipe(gulp.dest('./build/'));
 });
 
+// Compile dev and libs js-libs
+// Concat and injecting in build dir
+gulp.task('js-inject', function () {
+    var target = gulp.src('./build/index.html');
+    var customJsStream = gulp.src([ './src_libs/bower/jquery/dist/jquery.min.js',
+                                    './src_libs/bower/bootstrap/dist/js/bootstrap.min.js',
+                                    './src_libs/bower/angular/angular.min.js']);
+
+    return target
+        .pipe(inject(
+            customJsStream.pipe(print())
+                //.pipe(concat('main.min.js'))
+                .pipe(gulp.dest('build/js/libs')), { read: false, addRootSlash: false, relative: true })
+        )
+        .pipe(gulp.dest('./build/'));
+});
+
 // Default Gulp Task
 // Included libs, dev styles compile&inject and reload browsers on changes
-gulp.task('default', ['browser-sync', 'lib-less', 'less-task', 'css-inject'], function() {
+gulp.task('default', [  'browser-sync',
+                        'lib-less',
+                        'less-task',
+                        'css-inject',
+                        'js-inject'], function() {
     console.log('Gulp started!');
 
     var buildUpdate = ['less-task', 'css-inject', 'updateView'];
