@@ -1,0 +1,19 @@
+{
+  "isError": false,
+  "errorMessage": "",
+  "result": [
+    {
+      "id": 8277431,
+      "companyMarketId": "PLUS",
+      "companyMarket": "PULSE - US",
+      "firstName": "TEST",
+      "lastName": "CHICAGO Office",
+      "nationality": "AMERICAN",
+      "statusId": "ACTIVE",
+      "status": "Active",
+      "email": "simon.jdjdj@hhh.com",
+      "accountDate": "Dec 19, 2007",
+      "lastUsageDate": "Feb 01, 2014"
+    }
+  ]
+}

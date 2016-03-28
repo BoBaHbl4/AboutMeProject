@@ -1,0 +1,24 @@
+{
+  "isError":false,
+  "errorMessage":"",
+  "result":[
+    {
+      "recordId":-1,
+      "customerId":8277431,
+      "languageId":20,
+      "isSpeaking":false,
+      "isFavorite":false,
+      "language":"English",
+      "languageDisplay":"English"
+    },
+    {
+      "recordId":7,
+      "customerId":8277431,
+      "languageId":66,
+      "isSpeaking":true,
+      "isFavorite":true,
+      "language":"Russian",
+      "languageDisplay":"Russian"
+    }
+  ]
+}

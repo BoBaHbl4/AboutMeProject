@@ -4,27 +4,36 @@ var reload      = browserSync.reload;
 var less = require("gulp-less");
 var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
+var es = require('event-stream');
 var inject = require('gulp-inject');
 var concat = require('gulp-concat');
 var print = require('gulp-print');
 var angularFilesort = require('gulp-angular-filesort');
 var uglify = require('gulp-uglify');
+var ngAnnotate = require('gulp-ng-annotate');
+var sourcemaps = require('gulp-sourcemaps');
 var path = require('path');
 var util = require('gulp-util');
 var merge = require('merge-stream');
+var del = require('del');
 
 // Static Server
 gulp.task('browser-sync', function() {
     browserSync({
         server: {
-            baseDir: "./build"
+            baseDir: "./build/"
         },
-        startPath: "/"
+        startPath: "/views/"
     });
 });
 
 gulp.task('updateView', function() {
-    gulp.src('./build/*.html')
+    gulp.src(['./build/views/*.*', './build/css/*.css'])
+        .pipe(reload({stream:true}));
+});
+
+gulp.task('updateScript', ['updateView', 'js-dev-inject'], function() {
+    gulp.src('./dev_root/js/**/*.*')
         .pipe(reload({stream:true}));
 });
 
@@ -33,31 +42,34 @@ gulp.task('updateView', function() {
 // Compile libs *.less-files to css
 // Concat and minify styles
 gulp.task('lib-less', function () {
-    return gulp.src([   './src_dev/css/less/bootstrap/bootstrap.less',
-                        './src_dev/css/less/font-awesome/font-awesome.less'])
+    return gulp.src([
+            './dev_root/css/less/bootstrap/bootstrap.less',
+            './dev_root/css/less/font-awesome/font-awesome.less',
+            './dev_root/css/loading-bar.css'
+        ])
         .pipe(less())
         .pipe(minifyCSS())
         .pipe(concat('lib-styles.min.css'))
-        .pipe(gulp.dest('./src_dev/css'));
+        .pipe(gulp.dest('./dev_root/css'));
 });
 
 // Compile dev *.less-files to css
 // Concat and minify styles
 gulp.task('less-task', function () {
-    return gulp.src('./src_dev/css/less/*.less')
+    return gulp.src('./dev_root/css/*.less')
         .pipe(less())
-        .pipe(less().on('error', util.log))
         .pipe(concat('main.min.css'))
         .pipe(minifyCSS())
-        .pipe(gulp.dest('./src_dev/css'));
+        .pipe(gulp.dest('./dev_root/css'));
 });
 
-// Compile dev and libs css-files
-// Concat and injecting in build dir
-gulp.task('css-inject', function () {
-    var target = gulp.src('./build/index.html');
-    var customCssStream = gulp.src(['./src_dev/css/lib-styles.min.css',
-                                    './src_dev/css/main.min.css']);
+// Concat and injecting dev-css-files in build dir
+gulp.task('css-inject', ['less-task'], function () {
+    var target = gulp.src('./build/views/*.html');
+    var customCssStream = gulp.src([
+        './dev_root/css/lib-styles.min.css',
+        './dev_root/css/main.min.css'
+    ]);
 
     return target
         .pipe(inject(
@@ -65,39 +77,84 @@ gulp.task('css-inject', function () {
                 .pipe(concat('common.min.css'))
                 .pipe(gulp.dest('build/css')), { read: false, addRootSlash: false, relative: true })
         )
-        .pipe(gulp.dest('./build/'));
+        .pipe(gulp.dest('./build/views/'))
+        .pipe(reload({stream:true}));
 });
 
-// Compile dev and libs js-libs
-// Concat and injecting in build dir
-gulp.task('js-inject', function () {
-    var target = gulp.src('./build/index.html');
-    var customJsStream = gulp.src([ './src_libs/bower/jquery/dist/jquery.min.js',
-                                    './src_libs/bower/bootstrap/dist/js/bootstrap.min.js',
-                                    './src_libs/bower/angular/angular.min.js']);
+gulp.task('clean:app_compiled', function () {
+    return del([
+        './build/js/app.min.js'
+        // here we use a globbing pattern to match everything inside the `mobile` folder
+        //'./build/js/*.js'
+        // we don't want to clean this file though so we negate the pattern
+        //'!dist/mobile/deploy.json'
+    ]);
+});
+
+// Compiling js-dev js and injecting in build dir
+gulp.task('js-dev-inject', ['clean:app_compiled'], function () {
+    var target = gulp.src('./build/views/index.html');
+
+    var devJsStream = gulp.src([
+            './dev_root/js/app.js',
+            './dev_root/js/*.js',
+            './dev_root/js/**/*.js',
+            '!./dev_root/js/libs/*.js'])
+        .pipe(print())
+        .pipe(sourcemaps.init())
+        .pipe(concat('app.min.js'))
+        .pipe(ngAnnotate())
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./maps'))
+        .pipe(gulp.dest('build/js/'));
 
     return target
-        .pipe(inject(
-            customJsStream.pipe(print())
-                //.pipe(concat('main.min.js'))
-                .pipe(gulp.dest('build/js/libs')), { read: false, addRootSlash: false, relative: true })
-        )
-        .pipe(gulp.dest('./build/'));
+        .pipe(
+            inject(
+                devJsStream,
+                {name: 'dev', read: false, addRootSlash: false, relative: true}))
+        .pipe(gulp.dest('./build/views/'));
+});
+
+// Injecting js-vendor-libs in build dir
+gulp.task('js-vendor-inject', function () {
+    var target = gulp.src('./build/views/index.html');
+    var vendorJsStream = gulp.src([
+            './bower_components/jquery/dist/jquery.min.js',
+            './bower_components/bootstrap/dist/js/bootstrap.min.js',
+            './bower_components/angular/angular.min.js',
+            './bower_components/angular-animate/angular-animate.min.js',
+            './bower_components/angular-touch/angular-touch.min.js',
+            './bower_components/angular-loading-bar/build/loading-bar.min.js',
+            './bower_components/angular-ui-router/release/angular-ui-router.min.js',
+            './bower_components/angular-bootstrap/ui-bootstrap.min.js',
+            './bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js'])
+        .pipe(print())
+        .pipe(gulp.dest('build/js/libs'));
+
+    return target
+        .pipe(
+            inject(
+                vendorJsStream,
+                {name: 'vendor', read: false, addRootSlash: false, relative: true}))
+        .pipe(gulp.dest('./build/views/'));
 });
 
 // Default Gulp Task
 // Included libs, dev styles compile&inject and reload browsers on changes
 gulp.task('default', [  'browser-sync',
-                        'lib-less',
-                        'less-task',
-                        'css-inject',
-                        'js-inject'], function() {
+    'lib-less',
+    'less-task',
+    'css-inject',
+    'js-vendor-inject',
+    'js-dev-inject'], function() {
     console.log('Gulp started!');
 
-    var buildUpdate = ['less-task', 'css-inject', 'updateView'];
+    var buildUpdate = ['lib-less', 'less-task', 'css-inject', 'updateView'];
 
-    gulp.watch('./src_dev/css/less/*.less',buildUpdate);
-    gulp.watch('./src_dev/css/less/**/*.less',buildUpdate);
-    gulp.watch('./build/*.html',['updateView']);
+    gulp.watch('./dev_root/css/*.less',buildUpdate);
+    gulp.watch('./dev_root/css/less/*.less',buildUpdate);
+    gulp.watch('./build/views/*.*',['updateView']);
+    gulp.watch('./dev_root/js/**/*.js',['updateScript']);
 
 });
