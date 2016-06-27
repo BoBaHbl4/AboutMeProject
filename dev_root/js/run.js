@@ -19,10 +19,6 @@
                 langId: 'eng'
             },
             {
-                langName: 'Deutsch',
-                langId: 'de'
-            },
-            {
                 langName: 'Русский',
                 langId: 'ru'
             }

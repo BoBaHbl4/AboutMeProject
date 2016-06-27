@@ -1,12 +1,12 @@
 var translationsENG = {
     // Common Content
-    PROJECT_NAME: 'Front-end web developer | Main page',
+    PROJECT_NAME: 'Front-end',
     LINK_HOME: 'Home',
-    LINK_ABOUT: 'About',
+    LINK_ABOUT: 'About me',
     LINK_CONTACTS: 'Contacts',
-    FOOTER_INFO: '2016 Aniplissoranian.',
+    FOOTER_INFO: '2016 Vlad Econom',
     // Index State Content
-    TITLE_INDEX_ST: 'Aniplissoran project',
+    TITLE_INDEX_ST: 'Front-end web developer | Main page',
     META_NAME_DESCRIPTION_INDEX_ST: 'Aniplissoran project the main objective',
     OG_TITLE_INDEX_ST: 'Aniplissoran project the main objective, OG.',
     META_ITEMPROP_DESCRIPTION_INDEX_ST: 'Aniplissoran project — aniplissoranian options will serve as a best way to customize your business.',
@@ -20,19 +20,19 @@ var translationsENG = {
 var translationsRU= {
     // Common Content
     MAIN_TITLE: 'Фронт-енд веб-разработчик | Главная страница',
-    PROJECT_NAME: 'Аниплиссоран',
+    PROJECT_NAME: 'Фронт-енд',
     LINK_HOME: 'Главная',
-    LINK_ABOUT: 'О нас',
+    LINK_ABOUT: 'Обо мне',
     LINK_CONTACTS: 'Контакты',
-    FOOTER_INFO: '2016 Аниплиссоран',
+    FOOTER_INFO: '2016 Владимир Эконом',
     // Index State Content
-    TITLE_INDEX_ST: 'Проект Аниплиссоран',
-    META_NAME_DESCRIPTION_INDEX_ST: 'Основная цель Аниплиссорана',
+    TITLE_INDEX_ST: 'Фронт-енд веб-разработчик | Главная страница',
+    META_NAME_DESCRIPTION_INDEX_ST: 'Фронт-енд веб-разработчик',
     OG_TITLE_INDEX_ST: 'Основная цель Аниплиссорана, OG.',
-    META_ITEMPROP_DESCRIPTION_INDEX_ST: 'Проект Аниплиссоран — Аниплиссоранcкие возможности лучший способ реализовать настройку вашего бизнеса.',
-    HEAD1_INDEX_ST: 'Основная цель Аниплиссорана',
-    PARAGRAPH1_INDEX_ST: 'Аниплиссоран — мы работаем для того, чтобы помочь вам воспользоваться передовым подходом aниплиссоранcкой разработки. Далее мы будет рассуждать о чём-нибудь другом. Потому что всё это выдуманные термины в воображаемом мире Аниплиссорана.',
-    PARAGRAPH2_INDEX_ST: 'То, что все мы должны знать перед началом чего-либо - возможности aниплиссоранcкой разработки это лучшее, что вы когда-либо слышали.',
-    HEAD2_INDEX_ST: 'Аниплиссоранcкие возможности',
-    PARAGRAPH3_INDEX_ST: 'Всем нам периодически необходимо что-нибудь настроить. Аниплиссоранcкие возможности лучший способ это реализовать.'
+    META_ITEMPROP_DESCRIPTION_INDEX_ST: 'gulp, bower, html, css, js, angularjs.',
+    HEAD1_INDEX_ST: 'О проекте',
+    PARAGRAPH1_INDEX_ST: 'Данный проект — это демонстрация навыков фронт-енда, примеры работ и опыт работы в данной сфере.',
+    PARAGRAPH2_INDEX_ST: 'В разработке были использованы такие технологии как gulp, bower, html, css, js, angularjs.',
+    HEAD2_INDEX_ST: '',
+    PARAGRAPH3_INDEX_ST: ''
 };

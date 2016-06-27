@@ -22,7 +22,7 @@
             '<div class="page-spinner"><i class="fa fa-spinner fa-pulse page-spinner-icon text-primary"></i></div>';
 
         // Routing rules
-        $urlRouterProvider.otherwise('/eng/app-home/');
+        $urlRouterProvider.otherwise('/eng/');
 
         $stateProvider
             .state('root',{
@@ -41,7 +41,7 @@
                 }
             })
             .state('root.home', {
-                url: '/app-home/',
+                url: '/',
                 controller: 'MainCtrl',
                 views: {
                     'container@': {
