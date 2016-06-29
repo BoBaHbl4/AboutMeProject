@@ -53,7 +53,7 @@
                 }
             })
             .state('root.about', {
-                url: '/app-about/',
+                url: '/about/',
                 controller: 'MainCtrl',
                 views: {
                     'container@': {
@@ -65,7 +65,7 @@
                 }
             })
             .state('root.contacts', {
-                url: '/app-contacts/',
+                url: '/contacts/',
                 controller: 'MainCtrl',
                 views: {
                     'container@': {
@@ -75,7 +75,21 @@
                         templateUrl: '/views/contacts.state.html'
                     }
                 }
-            });
+            })
+            .state('root.error', {
+                url: '/error/',
+                controller: 'MainCtrl',
+                views: {
+                    'container@': {
+                        templateUrl: '/index.html'
+                    },
+                    'error': {
+                        templateUrl: '/views/error_status.html',
+                        controller: 'MainCtrl'
+                    }
+                }
+            })
+        ;
 
         $locationProvider.html5Mode({ enabled: true, requireBase: true });
     }

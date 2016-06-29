@@ -6,22 +6,21 @@
 
     function getService($http, $q, $state, $timeout) {
 
-        // "Customer Data Get Service"
-        console.log('Customer Data Get Service Starts');
+        // "Data Get Service"
+        console.log('Data Get Service Starts');
 
         return {
 
-            getDataItems: function (urlParams){
+            getDataItems: function (apiUrl){
                 
-                console.log('Customer Data Get Service Exec');
+                console.log('Data Get Service Exec');
                 
                 // Set common url variable for request
-                var requestUrlStartParamsAPI = urlParams.anyParams;
-                var requestUrlParams = urlParams.custId + urlParams.custIdValue + '&' + urlParams.userId + urlParams.userIdValue + '&' + urlParams.ticket + urlParams.ticketValue;
+                var requestUrlParams = apiUrl;
 
                 return $http.get(
                         // Get Request For Customer Profile First
-                        requestUrlStartParamsAPI + 'AccountData?' + requestUrlParams
+                        requestUrlParams
                     )
                     .then(
                         function (results) {
@@ -33,7 +32,7 @@
                             console.log('Error true');
 
                             // Route to error state if we got error response from server (sample)
-                            $state.go('error.status');
+                            $state.go('root.error');
                             if (error.status == 404) {
                                 console.log(error.status);
                             }

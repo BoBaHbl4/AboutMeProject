@@ -39,6 +39,7 @@
         // Set Url For Any "Data Get Service"
         var apiUrl = appConstant.API_URL;
 
+        // Set language function
         $scope.changeLanguage = function(language) {
 
             $state.go($state.current.name, {language: language});
@@ -52,6 +53,19 @@
             });
 
         }
+        
+        // Test request 
+        getService.getDataItems(apiUrl)
+            .then(
+                function (getDataItemsResults) {
+                    
+                }
+            )
+            .catch(function (getDataItemsError) {
+                console.log('service request error');
+                console.log(getDataItemsError);
+                return getDataItemsError;
+            });
 
     }
 
