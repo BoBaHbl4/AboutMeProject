@@ -19,23 +19,19 @@ var util = require('gulp-util');
 var merge = require('merge-stream');
 var del = require('del');
 
-// Static Server
+// Static Server 
 gulp.task('browser-sync', function() {
     browserSync({
         server: {
             baseDir: "./dev_root/",
             index: "/index.html",
-            // routes: {
-            //    "/home": "index.html"
-            // },
             middleware: [ historyApiFallback() ]
         },
         startPath: "/"
     });
 });
 
-// Generates site map for search engines
-
+// Generates site map for search engines 
 gulp.task('sitemap', function () {
     gulp.src(['./dev_root/views/*.*', './dev_root/*.html'], {
         read: false
@@ -46,22 +42,22 @@ gulp.task('sitemap', function () {
         .pipe(gulp.dest('./dev_root'));
 });
 
-// Updates views if css or html is changed
+// Updates views if css or html is changed 
 gulp.task('updateView', function() {
     gulp.src(['./dev_root/views/*.*', './dev_root/css/*.css'])
         .pipe(reload({stream:true}));
 });
 
-// Updates app if js is changed
+// Updates app if js is changed 
 gulp.task('updateScript', ['updateView', 'js-dev-inject'], function() {
     gulp.src('./dev_root/js/**/*.*')
         .pipe(reload({stream:true}));
 });
 
-// Styles tasks
+// Styles tasks 
 //
-// Compile libs *.less-files to css
-// Concat and minify styles
+// Compile libs *.less-files to css 
+// Concat and minify styles 
 gulp.task('lib-less', function () {
     return gulp.src([
         // TODO Before starting gulp move the proper .less libs to 'dev_root' folder
@@ -75,8 +71,8 @@ gulp.task('lib-less', function () {
         .pipe(gulp.dest('./dev_root/css'));
 });
 
-// Compile dev *.less-files to css
-// Concat and minify styles
+// Compile dev *.less-files to css 
+// Concat and minify styles 
 gulp.task('less-task', function () {
     return gulp.src(['./dev_root/css/*.less', './dev_root/css/less/*.less'])
         .pipe(less())
@@ -85,7 +81,7 @@ gulp.task('less-task', function () {
         .pipe(gulp.dest('./dev_root/css'));
 });
 
-// Concat and injecting dev-css-files in build dir
+// Concat and injecting dev-css-files 
 gulp.task('css-inject', ['less-task'], function () {
     var target = gulp.src('./dev_root/*.html');
     var customCssStream = gulp.src([
@@ -113,7 +109,7 @@ gulp.task('clean:app_compiled', function () {
     ]);
 });
 
-// Compiling js-dev js and injecting in build dir
+// Compiling js-dev js and injecting in build dir 
 gulp.task('js-dev-inject', ['clean:app_compiled'], function () {
     var target = gulp.src('./dev_root/*.html');
 
@@ -147,7 +143,7 @@ gulp.task('js-dev-inject', ['clean:app_compiled'], function () {
         .pipe(gulp.dest('./dev_root/'));
 });
 
-// Injecting js-vendor-libs in build dir
+// Injecting js-vendor-libs in build dir 
 gulp.task('js-vendor-inject', function () {
     var target = gulp.src('./dev_root/*.html');
     var vendorJsStream = gulp.src([
@@ -173,8 +169,8 @@ gulp.task('js-vendor-inject', function () {
         .pipe(gulp.dest('./dev_root/'));
 });
 
-// Default Gulp Task
-// Included libs, dev styles compile&inject and reload browsers on changes
+// Default Gulp Task 
+// Included libs, dev styles compile&inject and reload browsers on changes 
 gulp.task('default', [  'browser-sync',
     'lib-less',
     'less-task',

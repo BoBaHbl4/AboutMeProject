@@ -1,0 +1,21 @@
+#RewriteEngine on
+#RewriteCond %{REQUEST_FILENAME} -s [OR]
+#RewriteCond %{REQUEST_FILENAME} -l [OR]
+#RewriteCond %{REQUEST_FILENAME} -d
+#
+##RewriteRule ^.*$ - [NC,L]
+#
+#RewriteCond %{REQUEST_URI} !^/robots.txt
+#
+#RewriteRule ^/robots.txt - [L]
+#RewriteRule ^(.*) /index.html [NC,L]
+
+#New
+
+RewriteEngine   On
+
+RewriteCond     %{REQUEST_URI} !^(/index\.php|/img|/js|/css|/robots\.txt|/favicon\.ico)
+RewriteCond     %{REQUEST_FILENAME} !-f
+RewriteCond     %{REQUEST_FILENAME} !-d
+
+RewriteRule ^(.*) /index.html [NC,L]

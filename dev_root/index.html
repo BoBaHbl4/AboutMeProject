@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html ng-app="frontender"
+      ng-controller="MainCtrl"
+      lang="eng">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/">
+    <title>{{ 'TITLE_INDEX_ST' | translate }}</title>
+    <meta name="description" content="{{ 'META_NAME_DESCRIPTION_INDEX_ST' | translate }}">
+    <meta property="og:title" content="{{ 'OG_TITLE_INDEX_ST' | translate }}">
+    <meta itemprop="description" content="{{ 'META_ITEMPROP_DESCRIPTION_INDEX_ST' | translate }}">
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/css/common.min.css">
+    <!-- endinject -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+    <!-- Header -->
+    <header ui-view="header" id="header"></header>
+    <!-- /Header -->
+    <!-- Data Content -->
+    <section ui-view="data-content"
+             class="container"></section>
+    <!-- /Data Content -->
+    <section ui-view="error"
+             class="container"></section>
+    <!-- Footer -->
+    <footer ui-view="footer"
+            class="navbar-fixed-bottom bg-default p-tb-xs"
+            id="footer"></footer>
+    <!-- /Footer -->
+    <!-- Project Scripts -->
+    <!-- vendor:js -->
+    <script src="/js/libs/jquery.min.js"></script>
+    <script src="/js/libs/bootstrap.min.js"></script>
+    <script src="/js/libs/angular.min.js"></script>
+    <script src="/js/libs/angular-translate.min.js"></script>
+    <script src="/js/libs/update-meta.min.js"></script>
+    <script src="/js/libs/angular-animate.min.js"></script>
+    <script src="/js/libs/angular-touch.min.js"></script>
+    <script src="/js/libs/loading-bar.min.js"></script>
+    <script src="/js/libs/angular-ui-router.min.js"></script>
+    <script src="/js/libs/ui-bootstrap.min.js"></script>
+    <script src="/js/libs/ui-bootstrap-tpls.min.js"></script>
+    <!-- endinject -->
+    <!-- urlconfig:js -->
+    <script src="/js/api-url-config.js"></script>
+    <!-- endinject -->
+    <!-- dev:js -->
+    <script src="/js/app.js"></script>
+    <script src="/js/config.js"></script>
+    <script src="/js/constant.js"></script>
+    <script src="/js/run.js"></script>
+    <script src="/js/controllers/main.controller.js"></script>
+    <script src="/js/data/translations.js"></script>
+    <script src="/js/services/data.service.js"></script>
+    <!-- endinject -->
+</body>
+</html>
